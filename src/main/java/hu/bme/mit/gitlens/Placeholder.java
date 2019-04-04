@@ -1,4 +1,4 @@
-package WGit;
+package hu.bme.mit.gitlens;
 
 public class Placeholder {
 

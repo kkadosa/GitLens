@@ -16,8 +16,8 @@ else:
 from thrift.transport import TTransport, TSocket, TSSLSocket, THttpClient
 from thrift.protocol.TBinaryProtocol import TBinaryProtocol
 
-from WGit import WGitService
-from WGit.ttypes import *
+from hu.bme.mit.gitlens import GitLensService
+from hu.bme.mit.gitlens.ttypes import *
 
 if len(sys.argv) <= 1 or sys.argv[1] == '--help':
     print('')
@@ -104,7 +104,7 @@ else:
     else:
         transport = TTransport.TBufferedTransport(socket)
 protocol = TBinaryProtocol(transport)
-client = WGitService.Client(protocol)
+client = GitLensService.Client(protocol)
 transport.open()
 
 if cmd == 'answerAccess1':

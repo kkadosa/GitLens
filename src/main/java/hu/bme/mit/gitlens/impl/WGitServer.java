@@ -1,4 +1,4 @@
-package WGit.Impl;
+package hu.bme.mit.gitlens.impl;
 
 import org.apache.thrift.TProcessorFactory;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -8,7 +8,7 @@ import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TTransportException;
 
-import WGit.WGitService;
+import hu.bme.mit.gitlens.GitLensService;
 
 public class WGitServer implements Runnable {
 	private static final int PORT = 12147;
@@ -19,8 +19,8 @@ public class WGitServer implements Runnable {
         try {
         	//TODO:initialization
         		TNonblockingServerSocket socket = new TNonblockingServerSocket(PORT);
-        		WGitServiceImpl service = new WGitServiceImpl();        		
-                WGitService.Processor processor = new WGitService.Processor(service);
+        		GitLensServiceImpl service = new GitLensServiceImpl();        		
+        		GitLensService.Processor processor = new GitLensService.Processor(service);
                 THsHaServer.Args args = new THsHaServer.Args(socket);
                 args.protocolFactory(new TBinaryProtocol.Factory());
                 args.transportFactory(new TFramedTransport.Factory());

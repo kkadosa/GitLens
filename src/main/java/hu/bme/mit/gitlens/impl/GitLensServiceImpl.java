@@ -1,4 +1,4 @@
-package WGit.Impl;
+package hu.bme.mit.gitlens.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,45 +8,46 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.thrift.TException;
 
-import WGit.ServerResponse;
-import WGit.Modes;
-import WGit.Repo;
-import WGit.Auth.GreatLens;
+import hu.bme.mit.gitlens.ColossalLens;
+import hu.bme.mit.gitlens.Modes;
+import hu.bme.mit.gitlens.Repo;
+import hu.bme.mit.gitlens.ServerResponse;
+import hu.bme.mit.gitlens.auth.ColossalLensImpl;
 
-public class WGitServiceImpl implements WGit.WGitService.Iface{
+public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Iface{
 	
-	public static final Map<String, ReadWriteLock> Locks = Collections.synchronizedMap(new HashMap<String, ReadWriteLock>());
-	public static final Map<String, Repo> Repos = Collections.synchronizedMap(new HashMap<String, Repo>());
-	public static final GreatLens GreatLens = new GreatLens();
+	public static final Map<String, ReadWriteLock> LOCKS = Collections.synchronizedMap(new HashMap<String, ReadWriteLock>());
+	public static final Map<String, Repo> REPOS = Collections.synchronizedMap(new HashMap<String, Repo>());
+	public static final ColossalLens COLOSSAL_LENSE = new ColossalLensImpl();
 	
 	@Override
-	public ServerResponse AnswerAccess1(String repoName, String userName, Modes mode, String result) throws TException {
+	public ServerResponse answerAccess1(String repoName, String userName, Modes mode, String result) throws TException {
 		ServerResponse response;
 		if(mode == Modes.R) {
 			response = ReadResponse(repoName, userName, result);
 		} else {
 			response = new ServerResponse();
 			response.ReturnValue = 0;
-		}		
+		}
 		return response;
 	}
 
 	@Override
-	public ServerResponse AnswerPreGit(String repoName, String userName, Modes mode, Modes command) throws TException {
+	public ServerResponse answerPreGit(String repoName, String userName, Modes mode, Modes command) throws TException {
 		ServerResponse response = new ServerResponse();
 		response.ReturnValue = 0;
 		return response;
 	}
 
 	@Override
-	public ServerResponse AnswerAccess2(String repoName, String userName, Modes mode, String ref, String result,
+	public ServerResponse answerAccess2(String repoName, String userName, Modes mode, String ref, String result,
 			String oldCommit, String newCommit) throws TException {
 		ServerResponse response = WriteResponse();	
 		return response;
 	}
 
 	@Override
-	public ServerResponse AnswerPostGit(String repoName, String userName, Modes mode, Modes command) throws TException {
+	public ServerResponse answerPostGit(String repoName, String userName, Modes mode, Modes command) throws TException {
 		ServerResponse response = new ServerResponse();
 		response.ReturnValue = 0;
 		return response;
@@ -70,26 +71,27 @@ public class WGitServiceImpl implements WGit.WGitService.Iface{
 
 	private ServerResponse ReadResponse(String user, String repoName, String result) {
 		if(!result.equals("DENIED")) {
-			ReadWriteLock lock = Locks.computeIfAbsent(repoName, (name) -> new ReentrantReadWriteLock());
-			Repo repo = Repos.computeIfAbsent(repoName, (name) -> new RepoImpl());
+			ReadWriteLock lock = LOCKS.computeIfAbsent(repoName, (name) -> new ReentrantReadWriteLock());
+			Repo repo = REPOS.computeIfAbsent(repoName, (name) -> new RepoImpl());
 			boolean fresh = false;
 			try {
 				lock.readLock().lock();
-				fresh = repo.IsUpToDate();
+				fresh = repo.isUpToDate();
 			} finally {
 				lock.readLock().unlock();
 			}
-			try {
-				if(!fresh) {
+			if (!fresh) {
+				try {
 					lock.writeLock().lock();
-					repo.Refresh();
+					repo.refresh();
+				} finally {
+					lock.writeLock().unlock();
 				}
-			} finally {
-				lock.writeLock().unlock();
-			}			
+			}
+
 		}
 		ServerResponse response = new ServerResponse();
 		response.ReturnValue = 0;
 		return response;
-	}	
+	}
 }
