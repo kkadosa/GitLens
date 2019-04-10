@@ -1,5 +1,11 @@
 package hu.bme.mit.gitlens;
 
-public interface Lens {
+import java.io.File;
 
+public interface Lens {
+	
+	public void get(File f);
+
+	public void put(File gold, File front);
+	
 }
