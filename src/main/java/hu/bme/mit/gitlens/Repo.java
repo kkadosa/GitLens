@@ -5,7 +5,6 @@ public interface Repo {
 	public void refresh();
 	public Iterable<Commit> getBranchHeads();
 	//get ordered list?
-	public boolean isAuthorized(String oldSHA, String newSHA);
 	public boolean hasBranch(String branchName);
 	public Commit getCommit(String SHA);
 	public Commit getMatchingCommit(String SHA);

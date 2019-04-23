@@ -61,7 +61,7 @@ public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Ifa
 							COLOSSAL_LENS.put(gold, repo);
 						} finally {
 							gold.unlock();
-						}
+						}						
 					}
 				} else {
 					response.Response = "Pull!";

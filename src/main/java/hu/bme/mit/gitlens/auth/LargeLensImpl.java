@@ -13,8 +13,8 @@ public class LargeLensImpl implements LargeLens {
 	}
 
 	@Override
-	public void put(Repo gold, Commit infoSource, Repo front, Commit parentOfNew) {
+	public Commit put(Repo gold, Commit infoSource, Repo front, Commit parentOfNew) {
+		return null;
 		// TODO Auto-generated method stub
-
 	}
 }

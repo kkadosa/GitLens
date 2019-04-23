@@ -5,22 +5,25 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import hu.bme.mit.gitlens.Commit;
-import hu.bme.mit.gitlens.Placeholder;
 import hu.bme.mit.gitlens.Repo;
 
 public class RepoImpl implements Repo{
 	
-	Placeholder graph;
 	Map<String, Commit> branchHeads;
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	@Override
 	public boolean isUpToDate() {
-		boolean out = false;
+		boolean out = true;
 		Repo gold = GitLensServiceImpl.repos.get("");
 		try {
 			gold.readLock();
-			out = compareGraphs(gold);
+			for(Commit banchHead : gold.getBranchHeads()) {
+				if(out && !banchHead.matches(this.branchHeads.get(banchHead.getName()))) {
+					//TODO branch existence checking
+					out = false;
+				}
+			}
 		} finally {
 			gold.unlock();
 		}
@@ -30,13 +33,12 @@ public class RepoImpl implements Repo{
 	@Override
 	public void refresh() {
 		Repo gold = GitLensServiceImpl.repos.get("");
-		GitLensServiceImpl.COLOSSAL_LENS.get(gold, this);
-	}
-
-
-	private boolean compareGraphs(Repo otherRepo) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			gold.readLock();
+			GitLensServiceImpl.COLOSSAL_LENS.get(gold, this);
+		} finally {
+			gold.unlock();
+		}
 	}
 
 	@Override
@@ -45,16 +47,13 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public boolean isAuthorized(String oldSHA, String newSHA) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean hasBranch(String branchName) {
-		// TODO Auto-generated method stub
-
-		return false;
+	public boolean hasBranch(String name) {
+		if(branchHeads.containsKey(name)) {
+			return true;
+		} else {
+			//TODO refresh the map from file
+			return false;
+		}
 	}
 
 	@Override
@@ -97,6 +96,19 @@ public class RepoImpl implements Repo{
 
 	@Override
 	public Commit getLastMatchingAncestor(Repo from, Commit local) {
+		Commit ancestor = from.getMatchingCommit(local.getSHA());
+		while(ancestor == null) {
+			if(!local.isMergeCommit()) {
+				local = local.getAncestor();
+			} else {
+				local = getClosestCommonAncestor(local.getAncestor(1), local.getAncestor(2));
+			}
+			ancestor = from.getMatchingCommit(local.getSHA());
+		}
+		return ancestor;
+	}
+
+	private Commit getClosestCommonAncestor(Commit a, Commit b) {
 		// TODO Auto-generated method stub
 		return null;
 	}
