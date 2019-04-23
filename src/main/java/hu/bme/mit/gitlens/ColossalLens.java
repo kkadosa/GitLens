@@ -2,8 +2,10 @@ package hu.bme.mit.gitlens;
 
 public interface ColossalLens {
 	
-	public Commit get(Repo gold, Commit parentOfNew, Repo front, Commit infoSource);
+	public void get(Repo gold, Repo front);
 
-	public void put(Repo gold, Commit infoSource, Repo front, Commit parentOfNew);
+	public void put(Repo gold, Repo front);
+
+	public ServerResponse isAuthorized(Repo repo, String oldSHA, String newSHA);
 
 }

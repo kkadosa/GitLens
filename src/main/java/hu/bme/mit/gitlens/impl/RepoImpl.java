@@ -2,6 +2,7 @@ package hu.bme.mit.gitlens.impl;
 
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import hu.bme.mit.gitlens.Commit;
 import hu.bme.mit.gitlens.Placeholder;
@@ -11,45 +12,29 @@ public class RepoImpl implements Repo{
 	
 	Placeholder graph;
 	Map<String, Commit> branchHeads;
+	private ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	@Override
 	public boolean isUpToDate() {
 		boolean out = false;
-		ReadWriteLock lock = GitLensServiceImpl.LOCKS.get("");
+		Repo gold = GitLensServiceImpl.repos.get("");
 		try {
-			lock.readLock().lock();
-			Repo gold = GitLensServiceImpl.REPOS.get("");
-			out = gold.compareGraphs(graph);
+			gold.readLock();
+			out = compareGraphs(gold);
 		} finally {
-			lock.readLock().unlock();
+			gold.unlock();
 		}
 		return out;
 	}
 	
 	@Override
 	public void refresh() {
-		ReadWriteLock lock = GitLensServiceImpl.LOCKS.get("");
-		try {
-			lock.readLock().lock();
-			Repo gold = GitLensServiceImpl.REPOS.get("");
-			for(Commit branchHead : gold.getBranchHeads()) {
-				Commit frontBranchHead = branchHeads.get(branchHead.getName());
-				if(frontBranchHead != null) {
-					//TODO make branch
-					branchHeads.put(frontBranchHead.getName(), frontBranchHead);
-				}
-				if(!frontBranchHead.matches(frontBranchHead)) {
-					Commit newHead = GitLensServiceImpl.COLOSSAL_LENS.get(gold, branchHead, this, frontBranchHead);
-					branchHeads.replace(frontBranchHead.getName(), newHead);
-				}
-			}
-		} finally {
-			lock.readLock().unlock();
-		}
+		Repo gold = GitLensServiceImpl.repos.get("");
+		GitLensServiceImpl.COLOSSAL_LENS.get(gold, this);
 	}
 
-	@Override
-	public boolean compareGraphs(Placeholder graph) {
+
+	private boolean compareGraphs(Repo otherRepo) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -83,4 +68,54 @@ public class RepoImpl implements Repo{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void readLock() {
+		lock.readLock().lock();		
+	}
+	
+	@Override
+	public void writeLock() {
+		lock.writeLock().lock();		
+	}
+
+	@Override
+	public void unlock() {
+		try {
+			lock.readLock().unlock();
+		} catch (Exception e) {
+			//maybe expected?
+			// TODO: specify exception 
+		}
+		try {
+			lock.writeLock().unlock();
+		} catch (Exception e) {
+			//maybe expected?
+			// TODO: specify exception
+		}		
+	}
+
+	@Override
+	public Commit getLastMatchingAncestor(Repo from, Commit local) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createBranch(Commit root, String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Commit getBranchHead(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void pushBranch(String name, Commit newHead) {
+		// TODO Auto-generated method stub
+		
+	}	
 }

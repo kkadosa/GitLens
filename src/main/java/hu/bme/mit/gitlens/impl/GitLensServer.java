@@ -10,7 +10,7 @@ import org.apache.thrift.transport.TTransportException;
 
 import hu.bme.mit.gitlens.GitLensService;
 
-public class WGitServer implements Runnable {
+public class GitLensServer implements Runnable {
 	private static final int PORT = 12147;
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -34,6 +34,6 @@ public class WGitServer implements Runnable {
     }
 
 	public static void main(String[] args) {
-        new Thread(new WGitServer()).run();
+        new Thread(new GitLensServer()).run();
 	}
 }

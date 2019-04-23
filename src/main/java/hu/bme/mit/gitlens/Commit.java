@@ -6,4 +6,6 @@ public interface Commit {
 
 	String getName();
 
+	String getSHA();
+
 }

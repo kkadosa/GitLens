@@ -4,18 +4,41 @@ import hu.bme.mit.gitlens.ColossalLens;
 import hu.bme.mit.gitlens.Commit;
 import hu.bme.mit.gitlens.LargeLens;
 import hu.bme.mit.gitlens.Repo;
+import hu.bme.mit.gitlens.ServerResponse;
 
 public class ColossalLensImpl implements ColossalLens{
-	private LargeLens  ll = new LargeLensImpl();
+	private LargeLens  largeLens = new LargeLensImpl();
 
 	@Override
-	public Commit get(Repo gold, Commit parentOfNew, Repo front, Commit infoSource) {
-		return ll.get(gold, parentOfNew, front, infoSource);
+	public void get(Repo gold, Repo front) {
+		try {
+			gold.readLock();
+			for(Commit goldBranchHead : gold.getBranchHeads()) {
+				String name = goldBranchHead.getName();
+				if(!front.hasBranch(name)) {
+					Commit root = gold.getLastMatchingAncestor(front, goldBranchHead);
+					front.createBranch(root, name);
+				}
+				Commit frontBranchHead = front.getBranchHead(name);
+				if(!frontBranchHead.matches(goldBranchHead)) {
+					//TODO: full tree walk
+					Commit newHead = largeLens.get(gold, goldBranchHead, front, frontBranchHead);
+					front.pushBranch(name, newHead);
+				}
+			}
+		} finally {
+			gold.unlock();
+		}
 	}
 
 	@Override
-	public void put(Repo gold, Commit infoSource, Repo front, Commit parentOfNew) {
-		ll.put(gold, infoSource, front, parentOfNew);	
+	public void put(Repo gold, Repo front) {
+		//TODO	
 	}
 
+	@Override
+	public ServerResponse isAuthorized(Repo repo, String oldSHA, String newSHA) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
