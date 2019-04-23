@@ -76,6 +76,9 @@ public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Ifa
 								goldLock.writeLock().unlock();
 							}
 						}
+					} else {
+						response.Response = "You touched a file you weren't supposed to!";
+						response.ReturnValue = 2;
 					}
 				} else {
 					response.Response = "Pull!";

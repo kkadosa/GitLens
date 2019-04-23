@@ -15,7 +15,7 @@ public class ColossalLensImpl implements ColossalLens{
 
 	@Override
 	public void put(Repo gold, Commit infoSource, Repo front, Commit parentOfNew) {
-		ll.put(gold, infoSource, front, parentOfNew);		
+		ll.put(gold, infoSource, front, parentOfNew);	
 	}
 
 }

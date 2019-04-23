@@ -17,5 +17,5 @@ public class LargeLensImpl implements LargeLens {
 		// TODO Auto-generated method stub
 
 	}
-
+	
 }
