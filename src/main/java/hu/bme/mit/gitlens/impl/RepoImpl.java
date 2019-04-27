@@ -6,15 +6,17 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import hu.bme.mit.gitlens.Auth;
 import hu.bme.mit.gitlens.Commit;
 import hu.bme.mit.gitlens.Lens;
 import hu.bme.mit.gitlens.Repo;
 
 public class RepoImpl implements Repo{
 	
-	Map<String, Commit> branchHeads = new HashMap<String, Commit>();;
+	Map<String, Commit> branchHeads = new HashMap<String, Commit>();
 	Map<String, Commit> commits = new HashMap<String, Commit>();
 	Map<String, Commit> commitsByMatches = new HashMap<String, Commit>();
+	Map<Path, Lens> lenses = new HashMap<Path, Lens>();
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 	Path root;
 	Path tempPath;
@@ -86,9 +88,14 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public Lens getLens(Path p) {
-		// TODO auth class
-		return null;
+	public Lens getLens(Path path) {
+		Lens out = lenses.get(path);
+		if(out == null) {
+			Auth auth = GitLensServiceImpl.AUTH;
+			out = auth.getLens(this, path);
+			lenses.put(path, out);
+		}
+		return out;
 	}
 
 	@Override

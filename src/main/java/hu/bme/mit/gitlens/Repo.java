@@ -10,7 +10,7 @@ public interface Repo {
 	boolean hasBranch(String branchName);
 	void pushBranch(String name, Commit newHead);
 	void checkOut(Commit commit);
-	Lens getLens(Path p);
+	Lens getLens(Path path);
 	Commit commit();
 	void processAddedData(String branch, String newSHA);
 	Iterable<Path> getDifferentPaths(Commit older, Commit newer);

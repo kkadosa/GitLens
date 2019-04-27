@@ -6,15 +6,18 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 
+import hu.bme.mit.gitlens.Auth;
 import hu.bme.mit.gitlens.ColossalLens;
 import hu.bme.mit.gitlens.Modes;
 import hu.bme.mit.gitlens.Repo;
 import hu.bme.mit.gitlens.ServerResponse;
+import hu.bme.mit.gitlens.auth.AuthImpl;
 import hu.bme.mit.gitlens.auth.ColossalLensImpl;
 
 public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Iface {
 	public static final Map<String, Repo> repos = Collections.synchronizedMap(new HashMap<String, Repo>());
 	public static final ColossalLens COLOSSAL_LENS = new ColossalLensImpl();
+	public static final Auth AUTH = new AuthImpl();
 
 	// TODO crete gold repo on startup
 
