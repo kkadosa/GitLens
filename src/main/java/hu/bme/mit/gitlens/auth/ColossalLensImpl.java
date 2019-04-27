@@ -11,27 +11,34 @@ public class ColossalLensImpl implements ColossalLens {
 
 	@Override
 	public void get(Repo gold, Repo front) {
+		//only until we get to merging, then recursive
 		for (Commit goldBranchHead : gold.getBranchHeads()) {
 			String name = goldBranchHead.getName();
 			if (!front.hasBranch(name)) {
-				Commit root = gold.getLastMatchingAncestorTo(goldBranchHead);
+				Commit ancestor = goldBranchHead;
+				Commit root = null;
+				while(root == null) {
+					ancestor = ancestor.getAncestor();
+					root = front.getMatchingCommit(ancestor);
+				}
 				front.createBranch(root, name);
 			}
 			Commit frontBranchHead = front.getBranchHead(name);
 			if (!frontBranchHead.matches(goldBranchHead)) {
-				// TODO: full tree walk
 				Commit newHead = largeLens.get(gold, goldBranchHead, front, frontBranchHead);
 				front.pushBranch(name, newHead);
 			}
 		}
 	}
-
+	
+	
+	
 	@Override
 	public void put(Repo gold, Repo front) {
 		for (Commit frontBranchHead : front.getBranchHeads()) {
 			String name = frontBranchHead.getName();
 			if (gold.hasBranch(name)) {
-				// TODO branch making rights?
+				// branch making rights?
 				Commit goldBranchHead = gold.getBranchHead(name);
 				if (!frontBranchHead.matches(goldBranchHead)) {
 					// TODO: full tree walk

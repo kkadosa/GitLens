@@ -12,10 +12,14 @@ import hu.bme.mit.gitlens.Repo;
 
 public class RepoImpl implements Repo{
 	
-	Map<String, Commit> branchHeads;
+	Map<String, Commit> branchHeads = new HashMap<String, Commit>();;
+	Map<String, Commit> commits = new HashMap<String, Commit>();
+	Map<String, Commit> commitsByMatches = new HashMap<String, Commit>();
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 	Path root;
+	Path tempPath;
 	Map<Path, Lens> allPaths = new HashMap<Path, Lens>();
+	String name;
 
 	@Override
 	public boolean isUpToDate() {
@@ -24,9 +28,15 @@ public class RepoImpl implements Repo{
 		try {
 			gold.readLock();
 			for(Commit banchHead : gold.getBranchHeads()) {
-				if(out && !banchHead.matches(this.branchHeads.get(banchHead.getName()))) {
-					//TODO branch existence checking
-					out = false;
+				if(out) {
+					Commit localHead = branchHeads.get(banchHead.getName());
+					if(localHead != null) {
+						if(!localHead.matches(banchHead)) {
+							out = false;
+						}
+					} else {
+						out = false;
+					}
 				}
 			}
 		} finally {
@@ -47,8 +57,9 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public Iterable<Commit> getBranchHeads() {
-		return branchHeads.values();
+	public void createBranch(Commit root, String name) {
+		root.setName("name");
+		//TODO jgit make branch
 	}
 
 	@Override
@@ -62,15 +73,64 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public Commit getCommit(String SHA) {
-		// TODO Auto-generated method stub
+	public void pushBranch(String name, Commit newHead) {
+		Commit old = branchHeads.get(name);
+		old.setName(null);
+		newHead.setName(name);
+		branchHeads.put(name, newHead);
+	}
+
+	@Override
+	public void checkOut(Commit commit) {
+		// TODO jgit
+	}
+
+	@Override
+	public Lens getLens(Path p) {
+		// TODO auth class
 		return null;
 	}
 
 	@Override
-	public Commit getMatchingCommit(String SHA) {
-		// TODO Auto-generated method stub
+	public Commit commit() {
+		// TODO jgit
 		return null;
+	}
+
+	@Override
+	public void processAddedData(String branch, String newSHA) {
+		// TODO jgit refresh paths, add logical commits, push logical branch
+	}
+
+	@Override
+	public Iterable<Path> getDifferentPaths(Commit older, Commit newer) {
+		// TODO jgit diff
+		return null;
+	}
+
+	@Override
+	public Iterable<Path> getAllPaths() {
+		return allPaths.keySet();
+	}
+
+	@Override
+	public Iterable<Commit> getBranchHeads() {
+		return branchHeads.values();
+	}
+
+	@Override
+	public Commit getCommit(String SHA) {
+		return commits.get(SHA);
+	}
+
+	@Override
+	public Commit getMatchingCommit(Commit commit) {
+		return commitsByMatches.get(commit.getSHA());
+	}
+	
+	@Override
+	public Commit getBranchHead(String name) {
+		return branchHeads.get(name);
 	}
 
 	@Override
@@ -89,57 +149,12 @@ public class RepoImpl implements Repo{
 			lock.readLock().unlock();
 		} catch (Exception e) {
 			//maybe expected?
-			// TODO: specify exception 
 		}
 		try {
 			lock.writeLock().unlock();
 		} catch (Exception e) {
 			//maybe expected?
-			// TODO: specify exception
 		}		
-	}
-
-	@Override
-	public Commit getLastMatchingAncestorTo(Commit local) {
-		Repo other = local.getRepo();
-		Commit ancestor = other.getMatchingCommit(local.getSHA());
-		while(ancestor == null) {
-			if(!local.isMergeCommit()) {
-				local = local.getAncestor();
-			} else {
-				local = getClosestCommonAncestor(local.getAncestor(1), local.getAncestor(2));
-			}
-			ancestor = other.getMatchingCommit(local.getSHA());
-		}
-		return ancestor;
-	}
-
-	private Commit getClosestCommonAncestor(Commit a, Commit b) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createBranch(Commit root, String name) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Commit getBranchHead(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void pushBranch(String name, Commit newHead) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Iterable<Path> getAllPaths() {
-		return allPaths.keySet();
 	}
 
 	@Override
@@ -148,43 +163,12 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public void checkOut(Commit commit) {
-		// TODO Auto-generated method stub
-		
+	public Path getTemporaryPath() {
+		return tempPath;
 	}
-
-	@Override
-	public Lens getLens(Path p) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Commit commit() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterable<Path> getDifferentPaths(Commit older, Commit newer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void processAddedData(String branch, String newSHA) {
-		// TODO refresh paths, add logical commits, push logical branch
-	}
-
-	@Override
-	public Path getTemporaryPath() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 }

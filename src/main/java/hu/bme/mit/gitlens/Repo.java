@@ -6,24 +6,23 @@ public interface Repo {
 	
 	boolean isUpToDate();
 	void refresh();
-	Iterable<Commit> getBranchHeads();
-	boolean hasBranch(String branchName);
-	Commit getCommit(String SHA);
-	Commit getMatchingCommit(String SHA);
-	void readLock();
-	void writeLock();
-	void unlock();
-	Commit getLastMatchingAncestorTo(Commit local);
 	void createBranch(Commit root, String name);
-	Commit getBranchHead(String name);
+	boolean hasBranch(String branchName);
 	void pushBranch(String name, Commit newHead);
-	Iterable<Path> getAllPaths();
-	Path getRootPath();
 	void checkOut(Commit commit);
 	Lens getLens(Path p);
 	Commit commit();
-	Iterable<Path> getDifferentPaths(Commit older, Commit newer);
-	String getName();
 	void processAddedData(String branch, String newSHA);
+	Iterable<Path> getDifferentPaths(Commit older, Commit newer);
+	Iterable<Path> getAllPaths();
+	Iterable<Commit> getBranchHeads();
+	Commit getCommit(String SHA);
+	Commit getMatchingCommit(Commit commit);
+	Commit getBranchHead(String name);
+	void readLock();
+	void writeLock();
+	void unlock();
+	Path getRootPath();
 	Path getTemporaryPath();
+	String getName();
 }

@@ -21,7 +21,7 @@ public class LargeLensImpl implements LargeLens {
 		front.checkOut(parentOfNew);
 		Path goldRoot = gold.getRootPath();
 		Path frontRoot = front.getRootPath();
-		for (Path p : gold.getDifferentPaths(gold.getMatchingCommit(parentOfNew.getSHA()), infoSource)) {
+		for (Path p : gold.getDifferentPaths(gold.getMatchingCommit(parentOfNew), infoSource)) {
 			Path goldPath = goldRoot.resolve(p);
 			Path frontPath = frontRoot.resolve(p);
 			Lens lens = front.getLens(p);
@@ -37,7 +37,7 @@ public class LargeLensImpl implements LargeLens {
 		front.checkOut(parentOfNew);
 		Path goldRoot = gold.getRootPath();
 		Path frontRoot = front.getRootPath();
-		for (Path p : front.getDifferentPaths(front.getMatchingCommit(parentOfNew.getSHA()), infoSource)) {
+		for (Path p : front.getDifferentPaths(front.getMatchingCommit(parentOfNew), infoSource)) {
 			Path goldPath = goldRoot.resolve(p);
 			Path frontPath = frontRoot.resolve(p);
 			Lens lens = front.getLens(p);
