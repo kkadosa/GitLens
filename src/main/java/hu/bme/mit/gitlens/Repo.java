@@ -1,18 +1,29 @@
 package hu.bme.mit.gitlens;
 
+import java.nio.file.Path;
+
 public interface Repo {
-	public boolean isUpToDate();
-	public void refresh();
-	public Iterable<Commit> getBranchHeads();
-	//get ordered list?
-	public boolean hasBranch(String branchName);
-	public Commit getCommit(String SHA);
-	public Commit getMatchingCommit(String SHA);
-	public void readLock();
-	public void unlock();
-	public void writeLock();
-	public Commit getLastMatchingAncestor(Repo from, Commit local);
-	public void createBranch(Commit root, String name);
-	public Commit getBranchHead(String name);
-	public void pushBranch(String name, Commit newHead);
+	
+	boolean isUpToDate();
+	void refresh();
+	Iterable<Commit> getBranchHeads();
+	boolean hasBranch(String branchName);
+	Commit getCommit(String SHA);
+	Commit getMatchingCommit(String SHA);
+	void readLock();
+	void writeLock();
+	void unlock();
+	Commit getLastMatchingAncestorTo(Commit local);
+	void createBranch(Commit root, String name);
+	Commit getBranchHead(String name);
+	void pushBranch(String name, Commit newHead);
+	Iterable<Path> getAllPaths();
+	Path getRootPath();
+	void checkOut(Commit commit);
+	Lens getLens(Path p);
+	Commit commit();
+	Iterable<Path> getDifferentPaths(Commit older, Commit newer);
+	String getName();
+	void processAddedData(String branch, String newSHA);
+	Path getTemporaryPath();
 }

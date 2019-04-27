@@ -14,7 +14,7 @@ public class ColossalLensImpl implements ColossalLens {
 		for (Commit goldBranchHead : gold.getBranchHeads()) {
 			String name = goldBranchHead.getName();
 			if (!front.hasBranch(name)) {
-				Commit root = gold.getLastMatchingAncestor(front, goldBranchHead);
+				Commit root = gold.getLastMatchingAncestorTo(goldBranchHead);
 				front.createBranch(root, name);
 			}
 			Commit frontBranchHead = front.getBranchHead(name);
@@ -43,11 +43,15 @@ public class ColossalLensImpl implements ColossalLens {
 	}
 
 	@Override
-	public ServerResponse isAuthorized(Repo repo, String oldSHA, String newSHA) {
-		// Commit oldCommit = repo.getCommit(oldSHA);
-		// Commit newCommit = repo.getCommit(newSHA);
-
-		// TODO Auto-generated method stub
-		return null;
+	public ServerResponse checkAuthorization(Repo repo, String branch, String oldSHA, String newSHA) {
+		ServerResponse sp = new ServerResponse();
+		sp.Response = largeLens.checkAuthorization(repo, repo.getCommit(oldSHA), repo.getCommit(newSHA));
+		if(sp.Response != null) {
+			sp.ReturnValue = 1;
+		} else {
+			repo.processAddedData(branch, newSHA);
+			sp.ReturnValue = 0;
+		}
+		return sp;
 	}
 }

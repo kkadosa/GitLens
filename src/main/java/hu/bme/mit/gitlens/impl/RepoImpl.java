@@ -1,16 +1,21 @@
 package hu.bme.mit.gitlens.impl;
 
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import hu.bme.mit.gitlens.Commit;
+import hu.bme.mit.gitlens.Lens;
 import hu.bme.mit.gitlens.Repo;
 
 public class RepoImpl implements Repo{
 	
 	Map<String, Commit> branchHeads;
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
+	Path root;
+	Map<Path, Lens> allPaths = new HashMap<Path, Lens>();
 
 	@Override
 	public boolean isUpToDate() {
@@ -95,15 +100,16 @@ public class RepoImpl implements Repo{
 	}
 
 	@Override
-	public Commit getLastMatchingAncestor(Repo from, Commit local) {
-		Commit ancestor = from.getMatchingCommit(local.getSHA());
+	public Commit getLastMatchingAncestorTo(Commit local) {
+		Repo other = local.getRepo();
+		Commit ancestor = other.getMatchingCommit(local.getSHA());
 		while(ancestor == null) {
 			if(!local.isMergeCommit()) {
 				local = local.getAncestor();
 			} else {
 				local = getClosestCommonAncestor(local.getAncestor(1), local.getAncestor(2));
 			}
-			ancestor = from.getMatchingCommit(local.getSHA());
+			ancestor = other.getMatchingCommit(local.getSHA());
 		}
 		return ancestor;
 	}
@@ -129,5 +135,56 @@ public class RepoImpl implements Repo{
 	public void pushBranch(String name, Commit newHead) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+
+	@Override
+	public Iterable<Path> getAllPaths() {
+		return allPaths.keySet();
+	}
+
+	@Override
+	public Path getRootPath() {
+		return root;
+	}
+
+	@Override
+	public void checkOut(Commit commit) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Lens getLens(Path p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Commit commit() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterable<Path> getDifferentPaths(Commit older, Commit newer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void processAddedData(String branch, String newSHA) {
+		// TODO refresh paths, add logical commits, push logical branch
+	}
+
+	@Override
+	public Path getTemporaryPath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

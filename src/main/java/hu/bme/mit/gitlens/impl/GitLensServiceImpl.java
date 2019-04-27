@@ -53,7 +53,8 @@ public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Ifa
 			try {
 				repo.readLock();
 				if (repo.isUpToDate()) {
-					response = COLOSSAL_LENS.isAuthorized(repo, oldCommit, newCommit);
+					String[] temp = ref.split("/");
+					response = COLOSSAL_LENS.checkAuthorization(repo, temp[temp.length -1], oldCommit, newCommit);
 					if (response.ReturnValue == 0) {
 						Repo gold = repos.get("");
 						try {
@@ -61,7 +62,7 @@ public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Ifa
 							COLOSSAL_LENS.put(gold, repo);
 						} finally {
 							gold.unlock();
-						}						
+						}			
 					}
 				} else {
 					response.Response = "Pull!";

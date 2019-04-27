@@ -6,6 +6,5 @@ public interface ColossalLens {
 
 	public void put(Repo gold, Repo front);
 
-	public ServerResponse isAuthorized(Repo repo, String oldSHA, String newSHA);
-
+	ServerResponse checkAuthorization(Repo repo, String branch, String oldSHA, String newSHA);
 }
