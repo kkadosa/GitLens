@@ -1,29 +1,34 @@
 package hu.bme.mit.gitlens.auth;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import hu.bme.mit.gitlens.Auth;
+import hu.bme.mit.gitlens.GitLensServer;
 import hu.bme.mit.gitlens.Lens;
 import hu.bme.mit.gitlens.Repo;
 
 public class AuthImpl implements Auth {
 	Map<Pair, Lens> lenses = new HashMap<Pair, Lens>();
-	List<Repo> repos = new ArrayList<Repo>();
+	GitLensServer server;
+	
+	//TODO z lens factory kind of thingie
+	
+	public AuthImpl(GitLensServer server) {
+		this.server = server;
+	}
 	
 	@Override
 	public Lens getLens(Repo repo, Path path) {
-		Pair ho = new Pair(repo, path);
+		Pair ho = new Pair(repo.getName(), path);
 		Lens out = lenses.get(ho);
 		if(out == null) {
 			out = new AllActionsAllowedLens();
 			lenses.put(ho, out);
-			for(Repo r : repos) {
+			for(Repo r : server.getRepos(repo.getProject())) {
 				if(!r.equals(repo)) {
-					lenses.put(new Pair(r, path), new HiddenLens());
+					lenses.put(new Pair(r.getName(), path), new HiddenLens());
 				}
 			}
 		}
@@ -31,14 +36,14 @@ public class AuthImpl implements Auth {
 	}
 
 	@Override
-	public void addLens(Repo repo, Path path, Lens lens) {
+	public void addLens(String repo, Path path, Lens lens) {
 		lenses.put(new Pair(repo, path), lens);
 	}
 	
 	private class Pair{
-		Repo repo;
+		String repo;
 		Path path;
-		Pair(Repo repo, Path path) {
+		Pair(String repo, Path path) {
 			this.repo = repo;
 			this.path = path;
 		}

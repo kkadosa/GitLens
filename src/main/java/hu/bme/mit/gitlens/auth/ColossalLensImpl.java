@@ -41,7 +41,7 @@ public class ColossalLensImpl implements ColossalLens {
 				// branch making rights?
 				Commit goldBranchHead = gold.getBranchHead(name);
 				if (!frontBranchHead.matches(goldBranchHead)) {
-					// TODO: full tree walk
+					// TODO z full tree walk
 					Commit newHead = largeLens.put(gold, goldBranchHead, front, frontBranchHead);
 					gold.pushBranch(name, newHead);
 				}

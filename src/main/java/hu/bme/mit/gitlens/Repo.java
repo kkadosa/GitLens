@@ -11,7 +11,7 @@ public interface Repo {
 	void pushBranch(String name, Commit newHead);
 	void checkOut(Commit commit);
 	Lens getLens(Path path);
-	Commit commit();
+	Commit commit(String lensedFrom);
 	void processAddedData(String branch, String newSHA);
 	Iterable<Path> getDifferentPaths(Commit older, Commit newer);
 	Iterable<Path> getAllPaths();
@@ -25,4 +25,5 @@ public interface Repo {
 	Path getRootPath();
 	Path getTemporaryPath();
 	String getName();
+	String getProject();
 }

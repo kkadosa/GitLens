@@ -27,7 +27,7 @@ public class LargeLensImpl implements LargeLens {
 			Lens lens = front.getLens(p);
 			lens.get(goldPath, frontPath);
 		}
-		return front.commit();
+		return front.commit(infoSource.getSHA());
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class LargeLensImpl implements LargeLens {
 			Lens lens = front.getLens(p);
 			lens.get(goldPath, frontPath);
 		}
-		return gold.commit();
+		return gold.commit(infoSource.getSHA());
 	}
 
 	@Override

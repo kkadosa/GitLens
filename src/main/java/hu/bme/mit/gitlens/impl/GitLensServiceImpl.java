@@ -1,30 +1,23 @@
 package hu.bme.mit.gitlens.impl;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.thrift.TException;
 
-import hu.bme.mit.gitlens.Auth;
-import hu.bme.mit.gitlens.ColossalLens;
+import hu.bme.mit.gitlens.GitLensServer;
 import hu.bme.mit.gitlens.Modes;
 import hu.bme.mit.gitlens.Repo;
 import hu.bme.mit.gitlens.ServerResponse;
-import hu.bme.mit.gitlens.auth.AuthImpl;
-import hu.bme.mit.gitlens.auth.ColossalLensImpl;
 
 public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Iface {
-	public static final Map<String, Repo> repos = Collections.synchronizedMap(new HashMap<String, Repo>());
-	public static final ColossalLens COLOSSAL_LENS = new ColossalLensImpl();
-	public static final Auth AUTH = new AuthImpl();
-
-	// TODO crete gold repo on startup
+	GitLensServer server;
+	
+	public GitLensServiceImpl(GitLensServer server) {
+		this.server = server;
+	}
 
 	@Override
 	public ServerResponse answerAccess1(String repoName, String userName, Modes mode, String result) throws TException {
 		if (mode == Modes.R && !result.equals("DENIED")) {
-			Repo repo = repos.computeIfAbsent(repoName, (name) -> new RepoImpl());
+			Repo repo = server.getRepo(repoName);
 			boolean fresh = false;
 			try {
 				repo.readLock();
@@ -52,17 +45,17 @@ public class GitLensServiceImpl implements hu.bme.mit.gitlens.GitLensService.Ifa
 		// TODO check mode
 		ServerResponse response = new ServerResponse();
 		if (!result.equals("DENIED")) {
-			Repo repo = repos.computeIfAbsent(repoName, (name) -> new RepoImpl());
+			Repo repo = server.getRepo(repoName);
 			try {
 				repo.readLock();
 				if (repo.isUpToDate()) {
 					String[] temp = ref.split("/");
-					response = COLOSSAL_LENS.checkAuthorization(repo, temp[temp.length -1], oldCommit, newCommit);
+					response = server.getColossalLens().checkAuthorization(repo, temp[temp.length -1], oldCommit, newCommit);
 					if (response.ReturnValue == 0) {
-						Repo gold = repos.get("");
+						Repo gold = server.getRepo(repo.getProject());
 						try {
 							gold.writeLock();
-							COLOSSAL_LENS.put(gold, repo);
+							server.getColossalLens().put(gold, repo);
 						} finally {
 							gold.unlock();
 						}			
