@@ -1,0 +1,3 @@
+[submodule "Curiosity"]
+	path = Curiosity
+	url = https://github.com/kkadosa/Curiosity.git
