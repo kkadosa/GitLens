@@ -1,6 +1,6 @@
 package hu.bme.mit.gitlens;
 
-import hu.bme.mit.curiosity.Plugin;
+import hu.bme.mit.platform.Plugin;
 import javafx.stage.Stage;
 
 class GitLens implements Plugin {
