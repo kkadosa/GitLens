@@ -1,5 +1,6 @@
 package hu.bme.mit.platform;
 
+import hu.bme.mit.platform.management.PluginManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,7 +32,8 @@ public class Curiosity extends Application {
         addFileTab(banner);
         //TODO other base features;
 
-
+        PluginManager manager = new PluginManager();
+        manager.loadExtantPlugins();
 
         stage.show();
     }
