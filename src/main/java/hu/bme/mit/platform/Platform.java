@@ -1,6 +1,6 @@
 package hu.bme.mit.platform;
 
-import hu.bme.mit.platform.management.PluginManager;
+import hu.bme.mit.platform.plugin.PluginManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
