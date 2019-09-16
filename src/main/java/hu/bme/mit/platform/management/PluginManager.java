@@ -39,7 +39,7 @@ public class PluginManager {
 
                 }
                 URLClassLoader classLoader = new URLClassLoader((URL[]) urls.toArray());
-                for(PluginProxy proxy : proxies) {
+                for (PluginProxy proxy : proxies) {
 
                 }
             }
@@ -57,9 +57,9 @@ public class PluginManager {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj == this){
+            if (obj == this) {
                 return true;
-            } else if (!(obj instanceof PluginProxy)){
+            } else if (!(obj instanceof PluginProxy)) {
                 return false;
             } else {
                 PluginProxy other = (PluginProxy) obj;
@@ -70,4 +70,6 @@ public class PluginManager {
         @Override
         public int hashCode() {
             return className.hashCode();
-}}}
+        }
+    }
+}
