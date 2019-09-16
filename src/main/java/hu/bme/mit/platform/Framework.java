@@ -10,12 +10,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class Platform extends Application {
+public class Framework extends Application {
 
     public static PluginManager pluginManager = new PluginManager();
+    public static Stage stage;
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage Stage) {
+        stage = Stage;
         stage.setTitle("Curiosity");
         BorderPane pane = new BorderPane();
         Scene scene = new Scene(pane);

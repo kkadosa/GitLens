@@ -1,17 +1,21 @@
 package hu.bme.mit.gitlens;
 
 import hu.bme.mit.platform.Plugin;
-import javafx.stage.Stage;
 
 class GitLens implements Plugin {
 
     @Override
-    public void load(Stage stage) {
+    public void load() {
 
     }
 
     @Override
     public void unload() {
 
+    }
+
+    @Override
+    public boolean isGui() {
+        return true;
     }
 }
