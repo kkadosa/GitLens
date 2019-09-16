@@ -16,11 +16,10 @@ repositories {
 
 dependencies {
 	implementation 'org.json:json:20190722'
-    implementation 'com.google.guava:guava:28.1-jre'
 }
 
 application {
-    mainClassName = 'hu.bme.mit.curiosity.Curiosity'
+    mainClassName = 'hu.bme.mit.curiosity.Platform'
 }
 
 

@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class Curiosity extends Application {
+public class Platform extends Application {
 
     public static PluginManager pluginManager = new PluginManager();
 
