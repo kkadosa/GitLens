@@ -70,6 +70,4 @@ public class PluginManager {
         @Override
         public int hashCode() {
             return className.hashCode();
-        }
-    }
-}
+}}}
