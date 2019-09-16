@@ -102,7 +102,8 @@ public class PluginManager {
                 Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
                 if (plugin.isGui()) {
                     CompletableFuture<String> f = new CompletableFuture<>();
-                    GuiPlugin guiPlugin = new GuiPlugin(plugin, f);
+                    GuiPluginWrapper g = new GuiPluginWrapper(plugin, f);
+                    Platform.runLater(g);
                     f.get();
                 } else {
                     plugin.load();
@@ -125,19 +126,19 @@ public class PluginManager {
         }
     }
 
-    private static class GuiPlugin implements Runnable {
+    private static class GuiPluginWrapper implements Runnable {
 
         Plugin plugin;
         CompletableFuture<String> future;
 
-        GuiPlugin(Plugin Plugin, CompletableFuture<String> Future) {
+        GuiPluginWrapper(Plugin Plugin, CompletableFuture<String> Future) {
             plugin = Plugin;
             future = Future;
         }
 
         @Override
         public void run() {
-            Platform.runLater(plugin::load);
+            plugin.load();
             future.complete("Probably will be useful later.");
         }
     }
