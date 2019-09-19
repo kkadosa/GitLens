@@ -14,7 +14,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.vertx:vertx-core:4.0.0-milestone2'
     implementation 'io.vertx:vertx-web:4.0.0-milestone2'
 }
 
