@@ -23,11 +23,6 @@ public class Equalizer extends AbstractVerticle implements Plugin {
     }
 
     @Override
-    public boolean isGui() {
-        return true;
-    }
-
-    @Override
     public void start() {
         Vertx vertx = Vertx.vertx();
         Router masterRouter = Router.router(vertx);

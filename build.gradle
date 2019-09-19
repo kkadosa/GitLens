@@ -1,7 +1,6 @@
 plugins {
     id 'java'
     id 'application'
-	id 'org.openjfx.javafxplugin' version "0.0.8"
 }
 
 group 'hu.bme.mit'
@@ -17,15 +16,8 @@ repositories {
 dependencies {
     implementation 'io.vertx:vertx-core:4.0.0-milestone2'
     implementation 'io.vertx:vertx-web:4.0.0-milestone2'
-	implementation 'org.json:json:20190722'
 }
 
 application {
     mainClassName = 'hu.bme.mit.curiosity.Platform'
-}
-
-
-javafx {
-    version = "11.0.2"
-    modules = [ 'javafx.controls' ]
 }

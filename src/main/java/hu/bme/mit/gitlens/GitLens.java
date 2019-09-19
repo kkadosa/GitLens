@@ -13,9 +13,4 @@ class GitLens implements Plugin {
     public void unload() {
 
     }
-
-    @Override
-    public boolean isGui() {
-        return true;
-    }
 }

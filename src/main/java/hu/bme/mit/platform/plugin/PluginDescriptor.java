@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PluginDescriptor {
-    String name;
+    String className;
     URL url;
     Set<PluginDescriptor> dependencies = new HashSet<>();
     Set<PluginDescriptor> dependents = new HashSet<>();
@@ -18,12 +18,12 @@ public class PluginDescriptor {
             return false;
         } else {
             PluginDescriptor other = (PluginDescriptor) obj;
-            return this.name.equals(other.name);
+            return this.className.equals(other.className);
         }
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return className.hashCode();
     }
 }

@@ -1,9 +1,8 @@
 package hu.bme.mit.platform.plugin;
 
 import hu.bme.mit.platform.Plugin;
-import javafx.application.Platform;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.jar.Attributes;
 
 public class PluginManager {
@@ -30,35 +28,34 @@ public class PluginManager {
     public void loadExtantPlugins() {
         try {
             if (Files.exists(PLUGIN_PATH)) {
-                String content = Files.readString(PLUGIN_PATH);
-                JSONArray pluginArray = new JSONArray(content);
+                JsonArray pluginArray = new JsonArray(Files.readString(PLUGIN_PATH));
                 List<URL> urls = new ArrayList<>();
                 Map<String, List<String>> dependencyMap = new HashMap<>();
-                for (int i = 0; i < pluginArray.length(); ++i) {
+                for (int i = 0; i < pluginArray.size(); ++i) {
                     PluginDescriptor plugin = new PluginDescriptor();
                     plugin.url = new URL(pluginArray.getString(i));
                     urls.add(plugin.url);
 
                     URL jarURL = new URL("jar", "", plugin.url.toString() + "!/");
-                    JarURLConnection juc = (JarURLConnection) jarURL.openConnection();
-                    Attributes attributes = juc.getAttributes();
-                    JSONObject context = new JSONObject(attributes.getValue(Keys.CONTEXT));
+                    JarURLConnection jarUrlConnection = (JarURLConnection) jarURL.openConnection();
+                    Attributes attributes = jarUrlConnection.getAttributes();
+                    JsonObject context = new JsonObject(attributes.getValue(Keys.CONTEXT));
                     //TODO decide upon attributes
-                    plugin.name = context.getString(Keys.PLUGIN_CLASS);
-                    plugins.put(plugin.name, plugin);
-                    JSONArray dependencies = context.getJSONArray(Keys.DEPENDENCIES);
+                    plugin.className = context.getString(Keys.PLUGIN_CLASS);
+                    plugins.put(plugin.className, plugin);
+                    JsonArray dependencies = context.getJsonArray(Keys.DEPENDENCIES);
                     List<String> list = new ArrayList<>();
-                    for (int j = 0; j < dependencies.length(); ++j) {
+                    for (int j = 0; j < dependencies.size(); ++j) {
                         String dependency = dependencies.getString(j);
                         list.add(dependency);
                     }
                     if (!list.isEmpty()) {
-                        dependencyMap.put(plugin.name, list);
+                        dependencyMap.put(plugin.className, list);
                     }
                 }
                 classLoader = new URLClassLoader((URL[]) urls.toArray());
                 for (PluginDescriptor dependent : plugins.values()) {
-                    for (String dependency : dependencyMap.get(dependent.name)) {
+                    for (String dependency : dependencyMap.get(dependent.className)) {
                         if (dependency != null) {
                             PluginDescriptor depended = plugins.get(dependency);
                             depended.dependents.add(dependent);
@@ -98,16 +95,9 @@ public class PluginManager {
         @Override
         public void run() {
             try {
-                Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.name);
+                Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                 Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
-                if (plugin.isGui()) {
-                    CompletableFuture<String> f = new CompletableFuture<>();
-                    GuiPluginWrapper g = new GuiPluginWrapper(plugin, f);
-                    Platform.runLater(g);
-                    f.get();
-                } else {
-                    plugin.load();
-                }
+                plugin.load();
                 currentlyLoading.remove(pluginDescriptor);
                 loadMap.remove(pluginDescriptor);
                 for (PluginDescriptor plug : loadMap.keySet()) {
@@ -118,28 +108,11 @@ public class PluginManager {
                         CompletableFuture.runAsync(new ActualLoader(plug));
                     }
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException | InterruptedException | ExecutionException e) {
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 //TODO user viewable exception handling
                 System.out.println(e.getMessage());
                 e.printStackTrace();
             }
-        }
-    }
-
-    private static class GuiPluginWrapper implements Runnable {
-
-        Plugin plugin;
-        CompletableFuture<String> future;
-
-        GuiPluginWrapper(Plugin Plugin, CompletableFuture<String> Future) {
-            plugin = Plugin;
-            future = Future;
-        }
-
-        @Override
-        public void run() {
-            plugin.load();
-            future.complete("Probably will be useful later.");
         }
     }
 
