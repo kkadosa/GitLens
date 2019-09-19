@@ -10,6 +10,8 @@ public class Platform {
         //TODO base features;
 
         pluginManager.loadExtantPlugins();
+
+
     }
 
     public static void main(String[] args) {
