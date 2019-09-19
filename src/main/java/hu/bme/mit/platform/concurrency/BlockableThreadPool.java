@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 
 public class BlockableThreadPool {
 
-    public <T> Future<T> submit(Subthread<T> st){
+    public <T> Future<T> submit(Errand<T> st){
         CompletableFuture<T> ct = new CompletableFuture<>();
         return ct;
     }

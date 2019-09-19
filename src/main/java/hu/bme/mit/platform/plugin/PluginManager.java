@@ -1,6 +1,8 @@
 package hu.bme.mit.platform.plugin;
 
+import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.Plugin;
+import hu.bme.mit.platform.concurrency.Errand;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -70,7 +72,7 @@ public class PluginManager {
                 for (PluginDescriptor plugin : plugins.values()) {
                     if (loadMap.get(plugin).isEmpty()) {
                         currentlyLoading.add(plugin);
-                        CompletableFuture.runAsync(new ActualLoader(plugin));
+                        Platform.pool.submit(new ActualLoader(plugin));
                     }
                 }
             }
@@ -84,7 +86,7 @@ public class PluginManager {
     }
 
 
-    private class ActualLoader implements Runnable {
+    private class ActualLoader extends Errand<String> {
 
         PluginDescriptor pluginDescriptor;
 
@@ -93,7 +95,7 @@ public class PluginManager {
         }
 
         @Override
-        public void run() {
+        public void run(CompletableFuture<String> future) {
             try {
                 Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                 Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
@@ -105,7 +107,7 @@ public class PluginManager {
                     set.remove(pluginDescriptor);
                     if (set.isEmpty()) {
                         currentlyLoading.add(plug);
-                        CompletableFuture.runAsync(new ActualLoader(plug));
+                        Platform.pool.submit(new ActualLoader(plug));
                     }
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {

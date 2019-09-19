@@ -2,8 +2,12 @@ package hu.bme.mit.equalizer;
 
 import hu.bme.mit.equalizer.db.Db;
 import hu.bme.mit.equalizer.db.Repository;
+import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.Plugin;
-import io.vertx.core.*;
+import hu.bme.mit.platform.concurrency.Errand;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
@@ -54,8 +58,7 @@ public class Equalizer extends AbstractVerticle implements Plugin {
             response.setStatusCode(200);
             response.end();
             RepositoryLens lens = lensManager.get(repo);
-            CompletableFuture<String> f = new CompletableFuture<>();
-            lens.get(repo, payload, f);
+            Platform.pool.submit(new LensWrapper(lens, repo, payload, true));
         } else {
             response.setStatusCode(410);
             response.end();
@@ -64,5 +67,28 @@ public class Equalizer extends AbstractVerticle implements Plugin {
 
     private void put(RoutingContext routingContext) {
 
+    }
+
+    private static class LensWrapper extends Errand<String> {
+        private Repository repo;
+        private JsonObject payload;
+        boolean get;
+        RepositoryLens lens;
+
+        private LensWrapper(RepositoryLens lens, Repository repository, JsonObject payload, boolean get){
+            this.repo = repository;
+            this.payload = payload;
+            this.get = get;
+            this.lens = lens;
+        }
+
+        @Override
+        public void run(CompletableFuture<String> future) {
+            if(get){
+                lens.get(repo, payload, future);
+            } else {
+                lens.put(repo, payload, future);
+            }
+        }
     }
 }

@@ -2,13 +2,9 @@ package hu.bme.mit.platform.concurrency;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class Subthread<T>{
+public abstract class Errand<T> {
 
-    BlockableThreadPool pool;
-
-    protected void block(){
-        ;
-    }
+    BlockableThreadPool pool = null;
 
     public abstract void run(CompletableFuture<T> future);
 }
