@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 //syntax test class, to be deleted
 public class Test {
 
-    Errand<String> g = new AbstractErrand<String>() {
+    Errand<String> g = new Errand<String>() {
         @Override
         public void run(CompletableFuture<String> future) {
             future.exceptionally(Throwable::getMessage);
@@ -19,7 +19,7 @@ public class Test {
         Future<String> f = btp.submit(t);
     }
 
-    public static class Trt extends AbstractErrand<String> {
+    public static class Trt extends Errand<String> {
 
         @Override
         public void run(CompletableFuture<String> future) {

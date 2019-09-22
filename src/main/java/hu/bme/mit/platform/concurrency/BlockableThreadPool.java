@@ -1,12 +1,14 @@
 package hu.bme.mit.platform.concurrency;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
 public class BlockableThreadPool {
 
+    ForkJoinPool pool = ForkJoinPool.commonPool();
+
     public <T> Future<T> submit(Errand<T> st){
-        CompletableFuture<T> ct = new CompletableFuture<>();
-        return ct;
+        pool.submit(st);
+        return st.future;
     }
 }

@@ -2,9 +2,10 @@ package hu.bme.mit.platform.concurrency;
 
 import java.util.concurrent.CompletableFuture;
 
-public abstract class Errand<T> {
+public abstract class Errand<T> implements Runnable{
 
-    BlockableThreadPool pool = null;
+    CompletableFuture<T> future = new CompletableFuture<>();
 
-    public abstract void run(CompletableFuture<T> future);
+    @Override
+    public abstract void run();
 }
