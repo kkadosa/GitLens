@@ -8,7 +8,7 @@ public class Test {
 
     Errand<String> g = new Errand<String>() {
         @Override
-        public void run(CompletableFuture<String> future) {
+        public void run() {
             future.exceptionally(Throwable::getMessage);
         }
     };
@@ -22,7 +22,7 @@ public class Test {
     public static class Trt extends Errand<String> {
 
         @Override
-        public void run(CompletableFuture<String> future) {
+        public void run() {
             future.complete("terra");
         }
     }

@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class Errand<T> implements Runnable{
 
-    CompletableFuture<T> future = new CompletableFuture<>();
+    protected CompletableFuture<T> future = new CompletableFuture<>();
 
     @Override
     public abstract void run();

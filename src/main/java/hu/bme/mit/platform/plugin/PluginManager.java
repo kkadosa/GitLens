@@ -72,7 +72,7 @@ public class PluginManager {
                 for (PluginDescriptor plugin : plugins.values()) {
                     if (loadMap.get(plugin).isEmpty()) {
                         currentlyLoading.add(plugin);
-                        Platform.pool.submit(new ActualLoader(plugin));
+                        Platform.threadPool.submit(new ActualLoader(plugin));
                     }
                 }
             }
@@ -95,7 +95,7 @@ public class PluginManager {
         }
 
         @Override
-        public void run(CompletableFuture<String> future) {
+        public void run() {
             try {
                 Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                 Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
@@ -107,7 +107,7 @@ public class PluginManager {
                     set.remove(pluginDescriptor);
                     if (set.isEmpty()) {
                         currentlyLoading.add(plug);
-                        Platform.pool.submit(new ActualLoader(plug));
+                        Platform.threadPool.submit(new ActualLoader(plug));
                     }
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {

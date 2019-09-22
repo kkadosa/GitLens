@@ -58,7 +58,7 @@ public class Equalizer extends AbstractVerticle implements Plugin {
             response.setStatusCode(200);
             response.end();
             RepositoryLens lens = lensManager.get(repo);
-            Platform.pool.submit(new LensWrapper(lens, repo, payload, true));
+            Platform.threadPool.submit(new LensWrapper(lens, repo, payload, true));
         } else {
             response.setStatusCode(410);
             response.end();
@@ -83,7 +83,7 @@ public class Equalizer extends AbstractVerticle implements Plugin {
         }
 
         @Override
-        public void run(CompletableFuture<String> future) {
+        public void run() {
             if(get){
                 lens.get(repo, payload, future);
             } else {

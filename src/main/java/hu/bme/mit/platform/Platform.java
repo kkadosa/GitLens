@@ -6,7 +6,7 @@ import hu.bme.mit.platform.plugin.PluginManager;
 public class Platform {
 
     public static PluginManager pluginManager = new PluginManager();
-    public static BlockableThreadPool pool = new BlockableThreadPool();
+    public static BlockableThreadPool threadPool = new BlockableThreadPool();
 
     public void start() {
         //TODO base features;
