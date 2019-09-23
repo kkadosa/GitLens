@@ -2,9 +2,7 @@ package hu.bme.mit.equalizer;
 
 import hu.bme.mit.equalizer.db.Db;
 import hu.bme.mit.equalizer.db.Repository;
-import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.Plugin;
-import hu.bme.mit.platform.concurrency.Errand;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -15,6 +13,8 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 
 public class Equalizer extends AbstractVerticle implements Plugin {
 
@@ -58,7 +58,8 @@ public class Equalizer extends AbstractVerticle implements Plugin {
             response.setStatusCode(200);
             response.end();
             RepositoryLens lens = lensManager.get(repo);
-            Platform.threadPool.submit(new LensWrapper(lens, repo, payload, true));
+            CompletableFuture<String> future = new CompletableFuture<>();
+            ForkJoinPool.commonPool().submit(new LensWrapper(lens, repo, payload, true, future));
         } else {
             response.setStatusCode(410);
             response.end();
@@ -69,21 +70,23 @@ public class Equalizer extends AbstractVerticle implements Plugin {
 
     }
 
-    private static class LensWrapper extends Errand<String> {
+    private static class LensWrapper extends RecursiveAction {
         private Repository repo;
         private JsonObject payload;
         boolean get;
         RepositoryLens lens;
+        CompletableFuture<String> future;
 
-        private LensWrapper(RepositoryLens lens, Repository repository, JsonObject payload, boolean get){
+        private LensWrapper(RepositoryLens lens, Repository repository, JsonObject payload, boolean get, CompletableFuture<String> future){
             this.repo = repository;
             this.payload = payload;
             this.get = get;
             this.lens = lens;
+            this.future = future;
         }
 
         @Override
-        public void run() {
+        protected void compute() {
             if(get){
                 lens.get(repo, payload, future);
             } else {

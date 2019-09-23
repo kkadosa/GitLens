@@ -1,8 +1,6 @@
 package hu.bme.mit.platform.plugin;
 
-import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.Plugin;
-import hu.bme.mit.platform.concurrency.Errand;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
@@ -15,7 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 import java.util.jar.Attributes;
 
 public class PluginManager {
@@ -72,7 +71,7 @@ public class PluginManager {
                 for (PluginDescriptor plugin : plugins.values()) {
                     if (loadMap.get(plugin).isEmpty()) {
                         currentlyLoading.add(plugin);
-                        Platform.threadPool.submit(new ActualLoader(plugin));
+                        ForkJoinPool.commonPool().submit(new ActualLoader(plugin));
                     }
                 }
             }
@@ -86,7 +85,7 @@ public class PluginManager {
     }
 
 
-    private class ActualLoader extends Errand<String> {
+    private class ActualLoader extends RecursiveAction {
 
         PluginDescriptor pluginDescriptor;
 
@@ -95,7 +94,7 @@ public class PluginManager {
         }
 
         @Override
-        public void run() {
+        protected void compute() {
             try {
                 Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                 Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
@@ -107,7 +106,7 @@ public class PluginManager {
                     set.remove(pluginDescriptor);
                     if (set.isEmpty()) {
                         currentlyLoading.add(plug);
-                        Platform.threadPool.submit(new ActualLoader(plug));
+                        ForkJoinPool.commonPool().submit(new ActualLoader(plug));
                     }
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
