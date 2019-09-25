@@ -30,60 +30,60 @@ public class PluginManager {
         try {
             if (Files.exists(PLUGIN_PATH)) {
                 JsonArray pluginArray = new JsonArray(Files.readString(PLUGIN_PATH));
+                Map<String, PluginDescriptor> tempPlugins = new HashMap<>();
                 List<URL> urls = new ArrayList<>();
-                Map<String, List<String>> dependencyMap = new HashMap<>();
+                //Map<String, List<String>> dependencyMap = new HashMap<>();
                 for (int i = 0; i < pluginArray.size(); ++i) {
-                    PluginDescriptor plugin = new PluginDescriptor();
-                    plugin.url = new URL(pluginArray.getString(i));
-                    urls.add(plugin.url);
+                    try {
+                        URL url = new URL(pluginArray.getString(i));
+                        URL jarURL = new URL("jar", "", url.toString() + "!/");
+                        JarURLConnection jarUrlConnection = (JarURLConnection) jarURL.openConnection();
+                        Attributes attributes = jarUrlConnection.getAttributes();
+                        JsonArray contexts = new JsonArray(attributes.getValue(Keys.CONTEXTS));
+                        for (int j = 0; j < contexts.size(); ++j) {
+                            JsonObject context = contexts.getJsonObject(j);
+                            String className = context.getString(Keys.PLUGIN_CLASS);
+                            PluginDescriptor plugin;
+                            if (tempPlugins.containsKey(className)) {
+                                plugin = tempPlugins.remove(className);
+                            } else {
+                                plugin = new PluginDescriptor(className);
+                            }
+                            plugins.put(plugin.className, plugin);
+                            JsonArray dependencies = context.getJsonArray(Keys.DEPENDENCIES);
+                            for(int k = 0; k < dependencies.size(); ++k){
+                                String dName = dependencies.getString(k);
+                                PluginDescriptor otherPlugin = plugins.get(dName);
+                                if(otherPlugin == null){
+                                    otherPlugin = tempPlugins.computeIfAbsent(dName, PluginDescriptor::new);
+                                }
+                                plugin.dependencies.add(otherPlugin);
+                                otherPlugin.dependents.add(otherPlugin);
+                            }
+                            JsonArray collabs = context.getJsonArray(Keys.COLLABS);
+                            for(int k = 0; k < collabs.size(); ++k){
+                                String dName = collabs.getString(k);
+                                PluginDescriptor otherPlugin = plugins.get(dName);
+                                if(otherPlugin == null){
+                                    otherPlugin = tempPlugins.computeIfAbsent(dName, PluginDescriptor::new);
+                                }
+                                plugin.collaborators.add(otherPlugin);
+                            }
 
-                    URL jarURL = new URL("jar", "", plugin.url.toString() + "!/");
-                    JarURLConnection jarUrlConnection = (JarURLConnection) jarURL.openConnection();
-                    Attributes attributes = jarUrlConnection.getAttributes();
-                    JsonObject context = new JsonObject(attributes.getValue(Keys.CONTEXT));
-                    //TODO decide upon attributes
-                    plugin.className = context.getString(Keys.PLUGIN_CLASS);
-                    plugins.put(plugin.className, plugin);
-                    JsonArray dependencies = context.getJsonArray(Keys.DEPENDENCIES);
-                    List<String> list = new ArrayList<>();
-                    for (int j = 0; j < dependencies.size(); ++j) {
-                        String dependency = dependencies.getString(j);
-                        list.add(dependency);
-                    }
-                    if (!list.isEmpty()) {
-                        dependencyMap.put(plugin.className, list);
-                    }
-                }
-                classLoader = new URLClassLoader((URL[]) urls.toArray());
-                for (PluginDescriptor dependent : plugins.values()) {
-                    for (String dependency : dependencyMap.get(dependent.className)) {
-                        if (dependency != null) {
-                            PluginDescriptor depended = plugins.get(dependency);
-                            depended.dependents.add(dependent);
-                            dependent.dependencies.add(depended);
                         }
-                    }
-                }
-
-                for (PluginDescriptor plugin : plugins.values()) {
-                    loadMap.put(plugin, new HashSet<>(plugin.dependencies));
-                }
-                for (PluginDescriptor plugin : plugins.values()) {
-                    if (loadMap.get(plugin).isEmpty()) {
-                        currentlyLoading.add(plugin);
-                        ForkJoinPool.commonPool().submit(new ActualLoader(plugin));
+                        urls.add(url);
+                    } catch (IOException e) { //Problems with the jar
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (
+                IOException e) { //Problems with the file
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
     }
-
-    private void done(PluginDescriptor pluginDescriptor) {
-    }
-
 
     private class ActualLoader extends RecursiveAction {
 
@@ -118,8 +118,9 @@ public class PluginManager {
     }
 
     private static class Keys {
-        static final String CONTEXT = "Plugin-Context";
+        static final String CONTEXTS = "Plugin-Contexts";
         static final String PLUGIN_CLASS = "Plugin-Class";
         static final String DEPENDENCIES = "Dependencies";
+        static final String COLLABS = "Collaborators";
     }
 }

@@ -9,6 +9,11 @@ public class PluginDescriptor {
     URL url;
     Set<PluginDescriptor> dependencies = new HashSet<>();
     Set<PluginDescriptor> dependents = new HashSet<>();
+    Set<PluginDescriptor> collaborators = new HashSet<>();
+
+    public PluginDescriptor(String className) {
+        this.className = className;
+    }
 
     @Override
     public boolean equals(Object obj) {

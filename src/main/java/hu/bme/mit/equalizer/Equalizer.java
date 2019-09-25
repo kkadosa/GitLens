@@ -25,10 +25,6 @@ public class Equalizer extends AbstractVerticle implements Plugin {
     @Override
     public void load() {
         //TODO database, client, "update eagerly", "level"
-        VertxOptions op = new VertxOptions(); //if we don't use vert.x for concurrency, make it lighter
-        op.setEventLoopPoolSize(1);
-        op.setWorkerPoolSize(1);
-        Vertx vertx = Vertx.vertx(op);
         vertx.deployVerticle(this);
     }
 

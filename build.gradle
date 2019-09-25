@@ -15,9 +15,9 @@ repositories {
 
 dependencies {
     implementation 'io.vertx:vertx-web:4.0.0-milestone2'
-    implementation 'com.arangodb:arangodb-java-driver:6.3.0'
+    implementation 'com.orientechnologies:orientdb-graphdb:3.0.23'
 }
 
 application {
-    mainClassName = 'hu.bme.mit.curiosity.Platform'
+    mainClassName = 'hu.bme.mit.platform.Platform'
 }
