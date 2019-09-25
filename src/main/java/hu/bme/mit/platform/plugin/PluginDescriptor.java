@@ -7,6 +7,7 @@ import java.util.Set;
 public class PluginDescriptor {
     String className;
     URL url;
+    boolean isLoaded = false;
     Set<PluginDescriptor> dependencies = new HashSet<>();
     Set<PluginDescriptor> dependents = new HashSet<>();
     Set<PluginDescriptor> collaborators = new HashSet<>();
@@ -15,11 +16,21 @@ public class PluginDescriptor {
         this.className = className;
     }
 
+    public boolean isLoadable() {
+        boolean out = true;
+        for (PluginDescriptor p : dependencies) {
+            out = out && p.isLoaded;
+        }
+        return out;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (obj == null) {
+            return false;
+        } else if (obj == this) {
             return true;
-        } else if (!(obj instanceof PluginDescriptor)) {
+        } else if (!(PluginDescriptor.class.isAssignableFrom(obj.getClass()))) {
             return false;
         } else {
             PluginDescriptor other = (PluginDescriptor) obj;
