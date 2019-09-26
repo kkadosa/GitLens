@@ -1,6 +1,6 @@
 package hu.bme.mit.equalizer;
 
-import hu.bme.mit.equalizer.db.Repository;
+import hu.bme.mit.platform.db.Repository;
 import io.vertx.core.json.JsonObject;
 
 import java.util.concurrent.CompletableFuture;

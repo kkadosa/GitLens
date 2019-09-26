@@ -1,4 +1,4 @@
-package hu.bme.mit.equalizer.db;
+package hu.bme.mit.platform.db;
 
 public class Repository {
     public String uri;

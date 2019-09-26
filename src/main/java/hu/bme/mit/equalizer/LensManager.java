@@ -1,6 +1,6 @@
 package hu.bme.mit.equalizer;
 
-import hu.bme.mit.equalizer.db.Repository;
+import hu.bme.mit.platform.db.Repository;
 
 public class LensManager {
     //TODO factory stuff

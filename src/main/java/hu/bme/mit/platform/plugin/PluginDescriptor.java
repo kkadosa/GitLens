@@ -2,6 +2,7 @@ package hu.bme.mit.platform.plugin;
 
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class PluginDescriptor {
@@ -18,8 +19,9 @@ public class PluginDescriptor {
 
     public boolean isLoadable() {
         boolean out = true;
-        for (PluginDescriptor p : dependencies) {
-            out = out && p.isLoaded;
+        Iterator<PluginDescriptor> iterator = dependencies.iterator();
+        while (iterator.hasNext() && out) {
+            out = iterator.next().isLoaded;
         }
         return out;
     }

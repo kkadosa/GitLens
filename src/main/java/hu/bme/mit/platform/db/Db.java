@@ -1,8 +1,7 @@
-package hu.bme.mit.equalizer.db;
+package hu.bme.mit.platform.db;
 
 public class Db {
     //TODO database management
-
 
     public Db() {
 

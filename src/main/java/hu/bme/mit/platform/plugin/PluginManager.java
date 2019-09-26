@@ -82,6 +82,7 @@ public class PluginManager {
                         });
                     });
                     plugins.values().parallelStream().forEach(pluginDescriptor -> ForkJoinPool.commonPool().submit(new ActualLoader(pluginDescriptor)));
+
                 } else {
                     throw new FileNotFoundException("PluginDependencies not Installed");
                 }
@@ -105,12 +106,12 @@ public class PluginManager {
             try {
                 if (!pluginDescriptor.isLoaded) {
                     if (pluginDescriptor.isLoadable()) {
+                        pluginDescriptor.isLoaded = true;
                         Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                         Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
                         Set<String> collabs = new HashSet<>();
                         pluginDescriptor.collaborators.parallelStream().forEach(plugDescriptor -> collabs.add(plugDescriptor.className));
                         plugin.load(collabs);
-                        pluginDescriptor.isLoaded = true;
                         pluginDescriptor.dependents.parallelStream().forEach(depth -> ForkJoinPool.commonPool().submit(new ActualLoader(depth)));
                     }
                 }

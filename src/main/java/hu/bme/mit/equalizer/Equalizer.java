@@ -1,11 +1,10 @@
 package hu.bme.mit.equalizer;
 
-import hu.bme.mit.equalizer.db.Db;
-import hu.bme.mit.equalizer.db.Repository;
+import hu.bme.mit.platform.db.Db;
+import hu.bme.mit.platform.db.Repository;
 import hu.bme.mit.platform.Plugin;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
-import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
