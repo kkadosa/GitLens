@@ -107,7 +107,9 @@ public class PluginManager {
                     if (pluginDescriptor.isLoadable()) {
                         Class<?> pluginClass = classLoader.loadClass(pluginDescriptor.className);
                         Plugin plugin = (Plugin) pluginClass.getConstructor().newInstance();
-                        plugin.load();
+                        Set<String> collabs = new HashSet<>();
+                        pluginDescriptor.collaborators.parallelStream().forEach(plugDescriptor -> collabs.add(plugDescriptor.className));
+                        plugin.load(collabs);
                         pluginDescriptor.isLoaded = true;
                         pluginDescriptor.dependents.parallelStream().forEach(depth -> ForkJoinPool.commonPool().submit(new ActualLoader(depth)));
                     }
