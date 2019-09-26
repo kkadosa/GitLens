@@ -1,6 +1,6 @@
 package hu.bme.mit.equalizer;
 
-import hu.bme.mit.platform.db.Db;
+import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.db.Repository;
 import hu.bme.mit.platform.Plugin;
 import io.vertx.core.AbstractVerticle;
@@ -11,6 +11,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
@@ -18,12 +19,10 @@ import java.util.concurrent.RecursiveAction;
 public class Equalizer extends AbstractVerticle implements Plugin {
 
     public static Router masterRouter;
-    public static Db db;
     public static LensManager lensManager;
 
     @Override
-    public void load() {
-        //TODO database, client, "update eagerly", "level"
+    public void load(Set<String> expectedCollaborators) {
         vertx.deployVerticle(this);
     }
 
@@ -36,7 +35,6 @@ public class Equalizer extends AbstractVerticle implements Plugin {
     public void start() {
         Vertx vertx = Vertx.vertx();
         masterRouter = Router.router(vertx);
-        db =  new Db(); //TODO
         lensManager = new LensManager();
         masterRouter.get().handler(this::get);
         masterRouter.put().handler(this::put);
@@ -47,7 +45,7 @@ public class Equalizer extends AbstractVerticle implements Plugin {
     private void get(RoutingContext routingContext) {
         JsonObject payload =  routingContext.getBodyAsJson();
         String uriString = payload.getString("uri");
-        Repository repo = db.getRepository(uriString);
+        Repository repo = Platform.database.getRepository(uriString);
         HttpServerResponse response = routingContext.response();
         if(repo.isValid){
             response.setStatusCode(200);

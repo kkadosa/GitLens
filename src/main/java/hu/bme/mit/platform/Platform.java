@@ -1,5 +1,7 @@
 package hu.bme.mit.platform;
 
+import hu.bme.mit.platform.db.Database;
+import hu.bme.mit.platform.db.OrangoDatabase;
 import hu.bme.mit.platform.plugin.PluginManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -10,6 +12,7 @@ public class Platform extends AbstractVerticle {
 
     public static PluginManager pluginManager = new PluginManager();
     public static Vertx vertx;
+    public static Database database;
 
     public Platform(){
         int cores = CpuCoreSensor.availableProcessors();
@@ -23,6 +26,7 @@ public class Platform extends AbstractVerticle {
     public void start() {
         //base features;
 
+        database = new OrangoDatabase();
         pluginManager.loadExtantPlugins();
     }
 
