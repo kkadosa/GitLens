@@ -2,7 +2,7 @@ package hu.bme.mit.platform.db;
 
 import java.util.List;
 
-public class OrangoDatabase implements Database {
+public class OrientDatabase implements Database {
 
     @Override
     public Repository getRepository(String uriString) {

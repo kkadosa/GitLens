@@ -1,7 +1,7 @@
 package hu.bme.mit.platform;
 
 import hu.bme.mit.platform.db.Database;
-import hu.bme.mit.platform.db.OrangoDatabase;
+import hu.bme.mit.platform.db.OrientDatabase;
 import hu.bme.mit.platform.plugin.PluginManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
@@ -26,7 +26,7 @@ public class Platform extends AbstractVerticle {
     public void start() {
         //base features;
 
-        database = new OrangoDatabase();
+        database = new OrientDatabase();
         pluginManager.loadExtantPlugins();
     }
 
