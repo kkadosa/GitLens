@@ -1,4 +1,7 @@
-package hu.bme.mit.platform.data;
+package hu.bme.mit.platform.data.impl;
+
+import hu.bme.mit.platform.data.Database;
+import hu.bme.mit.platform.data.Repository;
 
 import java.util.List;
 

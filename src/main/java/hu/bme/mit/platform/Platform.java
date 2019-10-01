@@ -1,7 +1,7 @@
 package hu.bme.mit.platform;
 
 import hu.bme.mit.platform.data.Database;
-import hu.bme.mit.platform.data.OrientDatabase;
+import hu.bme.mit.platform.data.impl.OrientDatabase;
 import hu.bme.mit.platform.plugin.PluginManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;

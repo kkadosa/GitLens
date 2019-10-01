@@ -1,6 +1,6 @@
 package hu.bme.mit.gitlens;
 
-import hu.bme.mit.equalizer.RepositoryLens;
+import hu.bme.mit.collector.RepositoryLens;
 import hu.bme.mit.platform.data.Repository;
 import io.vertx.core.json.JsonObject;
 

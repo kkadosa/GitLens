@@ -1,4 +1,4 @@
-package hu.bme.mit.equalizer;
+package hu.bme.mit.collector;
 
 import hu.bme.mit.platform.Platform;
 import hu.bme.mit.platform.data.Repository;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
-public class Equalizer extends AbstractVerticle implements Plugin {
+public class Collector extends AbstractVerticle implements Plugin {
 
     public static Router masterRouter;
     public static LensManager lensManager;

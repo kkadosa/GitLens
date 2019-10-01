@@ -1,4 +1,4 @@
-package hu.bme.mit.equalizer;
+package hu.bme.mit.collector;
 
 import hu.bme.mit.platform.data.Repository;
 
