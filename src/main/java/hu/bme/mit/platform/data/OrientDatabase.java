@@ -1,4 +1,4 @@
-package hu.bme.mit.platform.db;
+package hu.bme.mit.platform.data;
 
 import java.util.List;
 

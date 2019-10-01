@@ -1,7 +1,7 @@
 package hu.bme.mit.equalizer;
 
 import hu.bme.mit.platform.Platform;
-import hu.bme.mit.platform.db.Repository;
+import hu.bme.mit.platform.data.Repository;
 import hu.bme.mit.platform.Plugin;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;

@@ -1,4 +1,4 @@
-package hu.bme.mit.platform.db;
+package hu.bme.mit.platform.data;
 
 public class Repository {
     public String uri;
