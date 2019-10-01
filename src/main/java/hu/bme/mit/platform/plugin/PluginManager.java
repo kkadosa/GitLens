@@ -79,7 +79,7 @@ public class PluginManager {
                     });
                 });
                 plugins.values().parallelStream().forEach(pluginDescriptor -> ForkJoinPool.commonPool().submit(new ActualLoader(pluginDescriptor)));
-
+                //TODO finish signal
             } else {
                 throw new FileNotFoundException("PluginDependencies not Installed");
             }

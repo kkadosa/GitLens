@@ -13,6 +13,7 @@ public class Platform extends AbstractVerticle {
     public static PluginManager pluginManager = new PluginManager();
     public static Vertx vertx;
     public static Database database;
+    public static LocalData localData;
 
     public Platform(){
         int cores = CpuCoreSensor.availableProcessors();
@@ -26,6 +27,7 @@ public class Platform extends AbstractVerticle {
     public void start() {
         //base features;
 
+        localData = new LocalData();
         database = new OrientDatabase();
         pluginManager.loadExtantPlugins();
     }
