@@ -19,21 +19,22 @@ public class GitRepositoryLens implements RepositoryLens {
     public void get(Repository repository, JsonObject payload, CompletableFuture<String> out) {
         Path root = Platform.localData.getFolder("GitRepos");
         Path gitDir = root.resolve(repository.user).resolve(repository.project).resolve(".git");
-        org.eclipse.jgit.lib.Repository repo = null;
+        org.eclipse.jgit.lib.Repository repo;
         try {
             if (!Files.exists(gitDir)) {
-                //TODO clone
+                clone(gitDir, repository);
             }
-            if (repo == null) {
-                FileRepositoryBuilder builder = new FileRepositoryBuilder();
-                repo = builder.setGitDir(gitDir.toFile()).build();
-            }
+            FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            repo = builder.setGitDir(gitDir.toFile()).setMustExist(true).build();
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
             out.completeExceptionally(e);
         }
+    }
+
+    private void clone(Path gitDir, Repository repository) {
     }
 
     @Override
