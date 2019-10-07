@@ -1,4 +1,4 @@
-package hu.bme.mit.platform.plugin;
+package hu.bme.mit.box.platform.plugin;
 
 import java.net.URL;
 import java.util.HashSet;

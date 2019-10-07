@@ -1,4 +1,4 @@
-package hu.bme.mit.platform.data;
+package hu.bme.mit.box.platform.data;
 
 public class Line {
     public Point from;

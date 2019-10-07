@@ -1,4 +1,4 @@
-package hu.bme.mit.platform.data;
+package hu.bme.mit.box.platform.data;
 
 import io.vertx.core.Verticle;
 

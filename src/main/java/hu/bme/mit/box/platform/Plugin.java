@@ -1,4 +1,4 @@
-package hu.bme.mit.platform;
+package hu.bme.mit.box.platform;
 
 import java.util.Set;
 

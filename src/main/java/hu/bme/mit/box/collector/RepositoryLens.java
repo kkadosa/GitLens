@@ -1,6 +1,6 @@
-package hu.bme.mit.collector;
+package hu.bme.mit.box.collector;
 
-import hu.bme.mit.platform.data.Repository;
+import hu.bme.mit.box.platform.data.Repository;
 import io.vertx.core.json.JsonObject;
 
 import java.util.concurrent.CompletableFuture;

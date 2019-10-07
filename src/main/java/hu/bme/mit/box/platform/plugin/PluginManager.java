@@ -1,10 +1,7 @@
-package hu.bme.mit.platform.plugin;
+package hu.bme.mit.box.platform.plugin;
 
-import hu.bme.mit.platform.Platform;
-import hu.bme.mit.platform.Plugin;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
-import io.vertx.core.eventbus.Message;
+import hu.bme.mit.box.platform.Platform;
+import hu.bme.mit.box.platform.Plugin;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 

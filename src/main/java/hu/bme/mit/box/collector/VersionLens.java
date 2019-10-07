@@ -1,4 +1,4 @@
-package hu.bme.mit.collector;
+package hu.bme.mit.box.collector;
 
 import java.util.concurrent.CompletableFuture;
 
