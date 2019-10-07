@@ -47,7 +47,7 @@ public class Collector extends AbstractVerticle implements Plugin {
         String uriString = payload.getString("uri");
         Repository repo = Platform.database.getRepository(uriString);
         HttpServerResponse response = routingContext.response();
-        if(repo.isValid){
+        if(true){  //checkmate?
             response.setStatusCode(200);
             response.end();
             RepositoryLens lens = lensManager.get(repo);
@@ -64,11 +64,11 @@ public class Collector extends AbstractVerticle implements Plugin {
     }
 
     private static class LensWrapper extends RecursiveAction {
-        private Repository repo;
-        private JsonObject payload;
-        boolean get;
-        RepositoryLens lens;
-        CompletableFuture<String> future;
+        private final Repository repo;
+        private final  JsonObject payload;
+        private final Boolean get;
+        private final RepositoryLens lens;
+        private final CompletableFuture<String> future;
 
         private LensWrapper(RepositoryLens lens, Repository repository, JsonObject payload, boolean get, CompletableFuture<String> future){
             this.repo = repository;

@@ -6,12 +6,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class PluginDescriptor {
-    String className;
+    final String className;
     URL url;
     boolean isLoaded = false;
-    Set<PluginDescriptor> dependencies = new HashSet<>();
-    Set<PluginDescriptor> dependents = new HashSet<>();
-    Set<PluginDescriptor> collaborators = new HashSet<>();
+    final Set<PluginDescriptor> dependencies = new HashSet<>();
+    final Set<PluginDescriptor> dependents = new HashSet<>();
+    final Set<PluginDescriptor> collaborators = new HashSet<>();
 
     public PluginDescriptor(String className) {
         this.className = className;

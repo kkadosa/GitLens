@@ -9,7 +9,7 @@ import io.vertx.core.impl.cpu.CpuCoreSensor;
 
 public class Platform extends AbstractVerticle {
 
-    public static PluginManager pluginManager = new PluginManager();
+    public static final PluginManager pluginManager = new PluginManager();
     public static Vertx vertx;
     public static Database database;
     public static LocalData localData;

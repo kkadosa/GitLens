@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class LensManager {
 
-    Map<String, RepositoryLens> repoLensesByClassname = new HashMap<>();
+    final Map<String, RepositoryLens> repoLensesByClassname = new HashMap<>();
 
     //TODO factory stuff
     public RepositoryLens get(Repository repo) {

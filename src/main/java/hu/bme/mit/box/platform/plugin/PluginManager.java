@@ -22,7 +22,7 @@ public class PluginManager {
 
     //TODO Exception handling
 
-    private Map<String, PluginDescriptor> plugins = new HashMap<>();
+    private final Map<String, PluginDescriptor> plugins = new HashMap<>();
     private ClassLoader classLoader;
 
     public void loadExtantPlugins() {
@@ -88,7 +88,7 @@ public class PluginManager {
 
     private class ActualLoader extends RecursiveAction {
 
-        PluginDescriptor pluginDescriptor;
+        final PluginDescriptor pluginDescriptor;
 
         public ActualLoader(PluginDescriptor pluginDescriptor) {
             this.pluginDescriptor = pluginDescriptor;
