@@ -1,4 +1,4 @@
-package hu.bme.mit.box.platform.data;
+package hu.bme.mit.box.data;
 
 import io.vertx.core.json.JsonObject;
 

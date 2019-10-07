@@ -1,8 +1,8 @@
 package hu.bme.mit.box.collector;
 
-import hu.bme.mit.box.platform.Platform;
-import hu.bme.mit.box.platform.data.Repository;
-import hu.bme.mit.box.platform.Plugin;
+import hu.bme.mit.box.Platform;
+import hu.bme.mit.box.data.Repository;
+import hu.bme.mit.box.Plugin;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;

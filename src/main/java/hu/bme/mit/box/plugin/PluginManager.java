@@ -1,7 +1,7 @@
-package hu.bme.mit.box.platform.plugin;
+package hu.bme.mit.box.plugin;
 
-import hu.bme.mit.box.platform.Platform;
-import hu.bme.mit.box.platform.Plugin;
+import hu.bme.mit.box.Platform;
+import hu.bme.mit.box.Plugin;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 

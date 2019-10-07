@@ -1,8 +1,8 @@
 package hu.bme.mit.box.gitlens;
 
 import hu.bme.mit.box.collector.RepositoryLens;
-import hu.bme.mit.box.platform.Platform;
-import hu.bme.mit.box.platform.data.Repository;
+import hu.bme.mit.box.Platform;
+import hu.bme.mit.box.data.Repository;
 import io.vertx.core.json.JsonObject;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

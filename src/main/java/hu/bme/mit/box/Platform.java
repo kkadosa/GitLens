@@ -1,7 +1,7 @@
-package hu.bme.mit.box.platform;
+package hu.bme.mit.box;
 
-import hu.bme.mit.box.platform.data.Database;
-import hu.bme.mit.box.platform.plugin.PluginManager;
+import hu.bme.mit.box.data.Database;
+import hu.bme.mit.box.plugin.PluginManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;

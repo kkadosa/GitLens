@@ -1,6 +1,6 @@
 package hu.bme.mit.box.collector;
 
-import hu.bme.mit.box.platform.data.Repository;
+import hu.bme.mit.box.data.Repository;
 
 import java.util.HashMap;
 import java.util.Map;

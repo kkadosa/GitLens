@@ -1,7 +1,7 @@
 package hu.bme.mit.box.gitlens;
 
 import hu.bme.mit.box.collector.Collector;
-import hu.bme.mit.box.platform.Plugin;
+import hu.bme.mit.box.Plugin;
 
 import java.util.Set;
 
