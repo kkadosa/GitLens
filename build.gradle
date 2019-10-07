@@ -16,6 +16,7 @@ repositories {
 dependencies {
     implementation 'io.vertx:vertx-web:4.0.0-milestone2'
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.5.0.201909110433-r'
+    implementation 'org.neo4j:neo4j:3.5.11'
 }
 
 application {

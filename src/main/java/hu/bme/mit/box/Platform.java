@@ -5,6 +5,7 @@ import hu.bme.mit.box.data.LocalData;
 import hu.bme.mit.box.data.impl.Neo4JDatabase;
 import hu.bme.mit.box.plugin.PluginManager;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.cli.CLI;
@@ -31,7 +32,7 @@ public class Platform extends AbstractVerticle {
         vertx = Vertx.vertx(op);
         vertx.deployVerticle(this);
         database = new Neo4JDatabase();
-        vertx.deployVerticle(database);
+        vertx.deployVerticle(database, new DeploymentOptions().setWorker(true) );
         pluginManager.loadExtantPlugins();
         localData = new LocalData();
     }
@@ -41,7 +42,7 @@ public class Platform extends AbstractVerticle {
                 .addOption(new Option().setLongName("help").setShortName("h").setDescription("This thing.").setFlag(true))
                 .addOption(new Option().setLongName("username").setShortName("u").setDescription("The username to be used with the database."))
                 .addOption(new Option().setLongName("password").setShortName("p").setDescription("The password to be used with the database."))
-                .addOption(new Option().setLongName("url").setShortName("l").setDescription("The URL (location) of the databse.")); //TODO defaults
+                .addOption(new Option().setLongName("url").setShortName("l").setDescription("The URL (location) of the database.")); //TODO defaults
         CommandLine commandLine = cli.parse(List.of(args));
         if(!commandLine.isFlagEnabled("help")){
             new Platform(commandLine.getOptionValue("url"), commandLine.getOptionValue("username"), commandLine.getOptionValue("password"));
