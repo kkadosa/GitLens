@@ -1,4 +1,4 @@
-package hu.bme.mit.box;
+package hu.bme.mit.box.data;
 
 import java.nio.file.Path;
 
