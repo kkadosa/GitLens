@@ -17,4 +17,9 @@ public class Neo4JDatabase extends AbstractVerticle implements Database {
     public List<String> getExtantPlugins() {
         return null;
     }
+
+    @Override
+    public List<String> fillProjectTables() {
+        return null;
+    }
 }

@@ -23,7 +23,7 @@ public class GitSingleRepositoryLens implements RepositoryLens {
         try {
             Path root = Platform.localData.getFolder("GitRepos");
             Path localGitDir = root.resolve(repository.user).resolve(".git"); //TODO project split
-
+            Platform.database.fillProjectTables();
 //        AtomicReference<String> primaryProject = new AtomicReference<>();
 //        repository.outgoingLines.parallelStream().forEach(line -> {
 //            if(line.name.equals("repository") && line.order.equals(0)){

@@ -8,4 +8,5 @@ public interface Database extends Verticle {
 
     Repository getRepository(String uriString);
     List<String> getExtantPlugins();
+    List<String> fillProjectTables();
 }
