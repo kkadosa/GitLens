@@ -9,7 +9,7 @@ class GitLens implements Plugin {
 
     @Override
     public void load(Set<String> expectedCollaborators) {
-        Collector.lensManager.add(new GitRepositoryLens());
+        Collector.lensManager.add(new GitSingleRepositoryLens());
     }
 
     @Override

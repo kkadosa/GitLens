@@ -9,6 +9,6 @@ public class Point {
     public String name;
     public String hash;
     public final JsonObject contents = new JsonObject();
-    public final Set<Line> incomingLines = new HashSet<>();
-    public final Set<Line> outgoingLines = new HashSet<>();
+    public final Set<String> incomingLines = new HashSet<>();
+    public final Set<String> outgoingLines = new HashSet<>();
 }
